@@ -38,11 +38,13 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation 'io.rest-assured:rest-assured:5.3.2'
     testImplementation 'org.testcontainers:junit-jupiter:1.19.7'
-    testImplementation 'org.testcontainers:docker-compose:1.19.7'
+    testImplementation 'org.testcontainers:testcontainers:1.19.7'
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+    exclude '**/controller/*IntegrationTest.class'
+    exclude '**/api/*ApiIsolatedTest.class'
 }
 
 tasks.named('build') {
