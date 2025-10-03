@@ -36,6 +36,9 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'io.rest-assured:rest-assured:5.3.2'
+    testImplementation 'org.testcontainers:junit-jupiter:1.19.7'
+    testImplementation 'org.testcontainers:docker-compose:1.19.7'
 }
 
 tasks.named('test') {
@@ -53,4 +56,13 @@ task integrationTests(type: Test) {
     testClassesDirs = sourceSets.test.output.classesDirs
     classpath = sourceSets.test.runtimeClasspath
     include '**/controller/*IntegrationTest.class'
+}
+
+task apiIsolatedTests(type: Test) {
+    description = 'Runs only API isolated tests using RestAssured and Testcontainers.'
+    group = 'verification'
+    useJUnitPlatform()
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    include '**/api/*ApiIsolatedTest.class'
 }
