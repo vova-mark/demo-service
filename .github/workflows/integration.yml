@@ -1,0 +1,17 @@
+# .github/workflows/integration.yml
+name: Integration Tests
+
+on: [workflow_call]
+
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run Integration Tests
+        run: ./gradlew integrationTests
+      - name: Publish Integration Test Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: integration-test-results
+          path: '**/build/test-results/integrationTests/*.xml'

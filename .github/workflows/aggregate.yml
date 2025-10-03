@@ -1,0 +1,19 @@
+# .github/workflows/aggregate.yml
+name: Aggregate Pipeline
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  unit:
+    uses: ./.github/workflows/unit.yml
+
+  integration:
+    needs: unit
+    uses: ./.github/workflows/integration.yml
+
+  api:
+    needs: integration
+    uses: ./.github/workflows/api.yml
