@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  demo-service:
+    build: .
+    ports:
+      - "8081:8081"
+    environment:
+      - JAVA_OPTS=
+    restart: unless-stopped
+
