@@ -3,17 +3,17 @@ pipeline {
     stages {
         stage('Build & Unit Tests') {
             steps {
-                build job: 'unit-tests-job', wait: true
+                build job: 'unit', wait: true
             }
         }
         stage('Integration Tests') {
             steps {
-                build job: 'integration-tests-job', wait: true
+                build job: 'integration', wait: true
             }
         }
         stage('API Isolated Tests') {
             steps {
-                build job: 'api-isolated-tests-job', wait: true
+                build job: 'api', wait: true
             }
         }
     }
