@@ -11,7 +11,7 @@ jobs:
       - name: Run Integration Tests
         run: ./gradlew integrationTests
       - name: Publish Integration Test Results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: integration-test-results
           path: '**/build/test-results/integrationTests/*.xml'
