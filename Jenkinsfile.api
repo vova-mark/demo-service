@@ -1,0 +1,16 @@
+pipeline {
+    agent any
+    stages {
+        stage('Run API Isolated Tests') {
+            steps {
+                sh './gradlew apiIsolatedTests'
+            }
+        }
+    }
+    post {
+        always {
+            junit '**/build/test-results/apiIsolatedTests/*.xml'
+        }
+    }
+}
+

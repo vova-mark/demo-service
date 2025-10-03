@@ -1,0 +1,21 @@
+pipeline {
+    agent any
+    stages {
+        stage('Build & Unit Tests') {
+            steps {
+                build job: 'unit-tests-job', wait: true
+            }
+        }
+        stage('Integration Tests') {
+            steps {
+                build job: 'integration-tests-job', wait: true
+            }
+        }
+        stage('API Isolated Tests') {
+            steps {
+                build job: 'api-isolated-tests-job', wait: true
+            }
+        }
+    }
+}
+

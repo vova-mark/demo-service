@@ -1,0 +1,16 @@
+pipeline {
+    agent any
+    stages {
+        stage('Build & Unit Tests') {
+            steps {
+                sh './gradlew clean build'
+            }
+        }
+    }
+    post {
+        always {
+            junit '**/build/test-results/test/*.xml'
+        }
+    }
+}
+

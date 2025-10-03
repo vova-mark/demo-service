@@ -1,0 +1,16 @@
+pipeline {
+    agent any
+    stages {
+        stage('Run Integration Tests') {
+            steps {
+                sh './gradlew integrationTests'
+            }
+        }
+    }
+    post {
+        always {
+            junit '**/build/test-results/integrationTests/*.xml'
+        }
+    }
+}
+
