@@ -1,0 +1,25 @@
+version: 0.2
+
+phases:
+  build:
+    commands:
+      # Run Unit Tests stage (matches Jenkinsfile.unit)
+      - ./gradlew clean build
+      # Run Integration Tests (matches Jenkinsfile.integration)
+      - ./gradlew integrationTests
+      # Run API Isolated Tests (matches Jenkinsfile.api)
+      - ./gradlew apiIsolatedTests
+
+reports:
+  unit-tests:
+    files:
+      - '**/build/test-results/test/*.xml'
+    base-directory: .
+  integration-tests:
+    files:
+      - '**/build/test-results/integrationTests/*.xml'
+    base-directory: .
+  api-isolated-tests:
+    files:
+      - '**/build/test-results/apiIsolatedTests/*.xml'
+    base-directory: .
