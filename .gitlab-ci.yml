@@ -13,7 +13,7 @@ unit:
   artifacts:
     when: always
     paths:
-      - '**/build/test-results/test/*.xml'
+      - build/test-results/test/*.xml
   only:
     - main
 
@@ -25,7 +25,7 @@ integration:
   artifacts:
     when: always
     paths:
-      - '**/build/test-results/integrationTests/*.xml'
+      - build/test-results/integrationTests/*.xml
   needs:
     - unit
   only:
@@ -39,7 +39,7 @@ api:
   artifacts:
     when: always
     paths:
-      - '**/build/test-results/apiIsolatedTests/*.xml'
+      - /build/test-results/apiIsolatedTests/*.xml
   needs:
     - integration
   only:
