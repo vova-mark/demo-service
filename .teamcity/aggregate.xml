@@ -1,0 +1,26 @@
+<!-- TeamCity: Aggregate Pipeline Build Configuration -->
+<build>
+    <name>Aggregate Pipeline</name>
+    <dependencies>
+        <dependency>
+            <build-configuration>Build & Unit Tests</build-configuration>
+            <type>snapshot</type>
+        </dependency>
+        <dependency>
+            <build-configuration>Integration Tests</build-configuration>
+            <type>snapshot</type>
+        </dependency>
+        <dependency>
+            <build-configuration>API Isolated Tests</build-configuration>
+            <type>snapshot</type>
+        </dependency>
+    </dependencies>
+    <steps>
+        <step name="Aggregate Step" type="simpleRunner">
+            <parameters>
+                <param name="command.executable">echo</param>
+                <param name="command.parameters">Aggregate Pipeline Complete</param>
+            </parameters>
+        </step>
+    </steps>
+</build>

@@ -1,0 +1,18 @@
+<!-- TeamCity: integration Build Configuration -->
+<build>
+    <name>Integration Tests</name>
+    <steps>
+        <step name="Checkout" type="vcsCheckout"/>
+        <step name="Run Integration Tests" type="simpleRunner">
+            <parameters>
+                <param name="command.executable">./gradlew</param>
+                <param name="command.parameters">integrationTests</param>
+            </parameters>
+        </step>
+    </steps>
+    <features>
+        <feature type="junit-10.0">
+            <param name="path">**/build/test-results/integrationTests/*.xml</param>
+        </feature>
+    </features>
+</build>

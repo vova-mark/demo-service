@@ -1,0 +1,18 @@
+<!-- TeamCity: API Isolated Tests Build Configuration -->
+<build>
+    <name>API Isolated Tests</name>
+    <steps>
+        <step name="Checkout" type="vcsCheckout"/>
+        <step name="Run API Isolated Tests" type="simpleRunner">
+            <parameters>
+                <param name="command.executable">./gradlew</param>
+                <param name="command.parameters">apiIsolatedTests</param>
+            </parameters>
+        </step>
+    </steps>
+    <features>
+        <feature type="junit-10.0">
+            <param name="path">**/build/test-results/apiIsolatedTests/*.xml</param>
+        </feature>
+    </features>
+</build>
