@@ -3,7 +3,7 @@
     <name>Aggregate Pipeline</name>
     <dependencies>
         <dependency>
-            <build-configuration>Build & Unit Tests</build-configuration>
+            <build-configuration>Build, Unit Tests</build-configuration>
             <type>snapshot</type>
         </dependency>
         <dependency>

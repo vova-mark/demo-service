@@ -1,9 +1,9 @@
 <!-- TeamCity: unit Build Configuration -->
 <build>
-    <name>Build & Unit Tests</name>
+    <name>Build Unit Tests</name>
     <steps>
         <step name="Checkout" type="vcsCheckout"/>
-        <step name="Build & Run Unit Tests" type="simpleRunner">
+        <step name="Build, Run Unit Tests" type="simpleRunner">
             <parameters>
                 <param name="command.executable">./gradlew</param>
                 <param name="command.parameters">clean build</param>
