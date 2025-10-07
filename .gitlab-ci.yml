@@ -9,7 +9,7 @@ stages:
 unit:
   stage: unit
   script:
-    - #git checkout $CI_COMMIT_REF_NAME
+#    - #git checkout $CI_COMMIT_REF_NAME
     - ./gradlew clean build
 #  artifacts:
 #    when: always
@@ -21,7 +21,7 @@ unit:
 integration:
   stage: integration
   script:
-    - #git checkout $CI_COMMIT_REF_NAME
+#    - #git checkout $CI_COMMIT_REF_NAME
     - ./gradlew integrationTests
 #  artifacts:
 #    when: always
@@ -35,7 +35,7 @@ integration:
 api:
   stage: api
   script:
-    - #git checkout $CI_COMMIT_REF_NAME
+#    - #git checkout $CI_COMMIT_REF_NAME
     - ./gradlew apiIsolatedTests
   artifacts:
     when: always
