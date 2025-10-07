@@ -1,4 +1,5 @@
 # .gitlab-ci.yml
+image: eclipse-temurin:21-jdk
 
 stages:
   - unit
