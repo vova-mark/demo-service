@@ -10,10 +10,10 @@ unit:
   script:
     - git checkout $CI_COMMIT_REF_NAME
     - ./gradlew clean build
-  artifacts:
-    when: always
-    paths:
-      - $BUILD_WORKDIR/build/test-results/test/*.xml
+#  artifacts:
+#    when: always
+#    paths:
+#      - $BUILD_WORKDIR/build/test-results/test/*.xml
   only:
     - main
 
@@ -22,10 +22,10 @@ integration:
   script:
     - git checkout $CI_COMMIT_REF_NAME
     - ./gradlew integrationTests
-  artifacts:
-    when: always
-    paths:
-      - $BUILD_WORKDIR/build/test-results/integrationTests/*.xml
+#  artifacts:
+#    when: always
+#    paths:
+#      - $BUILD_WORKDIR/build/test-results/integrationTests/*.xml
   needs:
     - unit
   only:
