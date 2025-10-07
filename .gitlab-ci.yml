@@ -1,0 +1,46 @@
+# .gitlab-ci.yml
+
+stages:
+  - unit
+  - integration
+  - api
+
+unit:
+  stage: unit
+  script:
+    - git checkout $CI_COMMIT_REF_NAME
+    - ./gradlew clean build
+  artifacts:
+    when: always
+    paths:
+      - '**/build/test-results/test/*.xml'
+  only:
+    - main
+
+integration:
+  stage: integration
+  script:
+    - git checkout $CI_COMMIT_REF_NAME
+    - ./gradlew integrationTests
+  artifacts:
+    when: always
+    paths:
+      - '**/build/test-results/integrationTests/*.xml'
+  needs:
+    - unit
+  only:
+    - main
+
+api:
+  stage: api
+  script:
+    - git checkout $CI_COMMIT_REF_NAME
+    - ./gradlew apiIsolatedTests
+  artifacts:
+    when: always
+    paths:
+      - '**/build/test-results/apiIsolatedTests/*.xml'
+  needs:
+    - integration
+  only:
+    - main
