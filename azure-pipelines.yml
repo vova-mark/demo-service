@@ -1,0 +1,29 @@
+trigger:
+- main  # Adjust branch name as needed
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+  - stage: Build_And_Unit_Tests
+    displayName: 'Build & Unit Tests'
+    jobs:
+      - job: UnitTests
+        steps:
+          - template: unit-pipeline.yml
+
+  - stage: Integration_Tests
+    displayName: 'Integration Tests'
+    dependsOn: Build_And_Unit_Tests
+    jobs:
+      - job: IntegrationTests
+        steps:
+          - template: integration-pipeline.yml
+
+  - stage: API_Isolated_Tests
+    displayName: 'API Isolated Tests'
+    dependsOn: Integration_Tests
+    jobs:
+      - job: ApiTests
+        steps:
+          - template: api-pipeline.yml
