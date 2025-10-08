@@ -1,0 +1,8 @@
+steps:
+  - script: ./gradlew apiIsolatedTests
+    displayName: 'Run API Isolated Tests'
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: '**/build/test-results/apiIsolatedTests/*.xml'
+      testRunTitle: 'API Isolated Tests Results'
+      failTaskOnFailedTests: true
