@@ -1,0 +1,8 @@
+steps:
+  - script: ./gradlew integrationTests
+    displayName: 'Run Integration Tests'
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: '**/build/test-results/integrationTests/*.xml'
+      testRunTitle: 'Integration Tests Results'
+      failTaskOnFailedTests: true
