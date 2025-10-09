@@ -2,7 +2,7 @@ trigger:
 - main  # Adjust branch name as needed
 
 pool:
-  name: Default  # Use your default agent pool
+  name: Azure Pipelines  # Use your default agent pool
 
 stages:
   - stage: Build_And_Unit_Tests
