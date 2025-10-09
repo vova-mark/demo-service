@@ -2,7 +2,7 @@ trigger:
 - main  # Adjust branch name as needed
 
 pool:
-  vmImage: 'ubuntu-latest'
+  name: Default  # Use your default agent pool
 
 stages:
   - stage: Build_And_Unit_Tests
