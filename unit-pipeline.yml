@@ -1,0 +1,8 @@
+steps:
+  - script: ./gradlew clean build
+    displayName: 'Build & Unit Tests'
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: '**/build/test-results/test/*.xml'
+      testRunTitle: 'Unit Tests Results'
+      failTaskOnFailedTests: true
