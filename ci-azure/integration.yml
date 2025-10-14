@@ -1,0 +1,14 @@
+# integration.yml for Azure DevOps (example content, please adapt as needed)
+steps:
+  - script: ./gradlew integrationTests
+    displayName: 'Run Integration Tests'
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: '**/build/test-results/integrationTests/*.xml'
+      testRunTitle: 'Integration Test Results'
+    condition: succeededOrFailed()
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathToPublish: '**/build/test-results/integrationTests/*.xml'
+      artifactName: 'integration-test-results'
+      publishLocation: 'Container'
