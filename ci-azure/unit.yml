@@ -1,0 +1,14 @@
+# unit.yml for Azure DevOps (example content, please adapt as needed)
+steps:
+  - script: ./gradlew clean build
+    displayName: 'Build & Run Unit Tests'
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: '**/build/test-results/test/*.xml'
+      testRunTitle: 'Unit Test Results'
+    condition: succeededOrFailed()
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathToPublish: '**/build/test-results/test/*.xml'
+      artifactName: 'unit-test-results'
+      publishLocation: 'Container'
