@@ -1,0 +1,76 @@
+# azure-pipelines.yml
+trigger:
+  branches:
+    include:
+      - main
+
+pr:
+  branches:
+    include:
+      - main
+
+stages:
+  - stage: Unit
+    displayName: 'Build & Unit Tests'
+    jobs:
+      - job: unit
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - checkout: self
+          - script: ./gradlew clean build
+            displayName: 'Build & Run Unit Tests'
+          - task: PublishTestResults@2
+            inputs:
+              testResultsFiles: '**/build/test-results/test/*.xml'
+              testRunTitle: 'Unit Test Results'
+            condition: succeededOrFailed()
+          - task: PublishBuildArtifacts@1
+            inputs:
+              pathToPublish: '**/build/test-results/test/*.xml'
+              artifactName: 'unit-test-results'
+              publishLocation: 'Container'
+
+  - stage: Integration
+    displayName: 'Integration Tests'
+    dependsOn: Unit
+    jobs:
+      - job: integration
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - checkout: self
+          - script: ./gradlew integrationTests
+            displayName: 'Run Integration Tests'
+          - task: PublishTestResults@2
+            inputs:
+              testResultsFiles: '**/build/test-results/integrationTests/*.xml'
+              testRunTitle: 'Integration Test Results'
+            condition: succeededOrFailed()
+          - task: PublishBuildArtifacts@1
+            inputs:
+              pathToPublish: '**/build/test-results/integrationTests/*.xml'
+              artifactName: 'integration-test-results'
+              publishLocation: 'Container'
+
+  - stage: API
+    displayName: 'API Isolated Tests'
+    dependsOn: Integration
+    jobs:
+      - job: api
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - checkout: self
+          - script: ./gradlew apiIsolatedTests
+            displayName: 'Run API Isolated Tests'
+          - task: PublishTestResults@2
+            inputs:
+              testResultsFiles: '**/build/test-results/apiIsolatedTests/*.xml'
+              testRunTitle: 'API Test Results'
+            condition: succeededOrFailed()
+          - task: PublishBuildArtifacts@1
+            inputs:
+              pathToPublish: '**/build/test-results/apiIsolatedTests/*.xml'
+              artifactName: 'api-test-results'
+              publishLocation: 'Container'
