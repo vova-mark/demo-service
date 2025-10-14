@@ -1,0 +1,14 @@
+# api.yml for Azure DevOps (example content, please adapt as needed)
+steps:
+  - script: ./gradlew apiIsolatedTests
+    displayName: 'Run API Isolated Tests'
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: '**/build/test-results/apiIsolatedTests/*.xml'
+      testRunTitle: 'API Test Results'
+    condition: succeededOrFailed()
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathToPublish: '**/build/test-results/apiIsolatedTests/*.xml'
+      artifactName: 'api-test-results'
+      publishLocation: 'Container'
