@@ -1,0 +1,9 @@
+# aggregate.yml for Azure DevOps (example content, please adapt as needed)
+steps:
+  - script: echo "Aggregating results"
+    displayName: 'Aggregate Results'
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathToPublish: '$(Build.ArtifactStagingDirectory)'
+      artifactName: 'aggregate-results'
+      publishLocation: 'Container'
