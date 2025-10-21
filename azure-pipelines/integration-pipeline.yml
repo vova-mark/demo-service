@@ -1,0 +1,23 @@
+# Converted from Jenkinsfile.integration
+# Azure DevOps Pipeline for Integration Tests
+
+trigger: none  # This will be triggered by the aggregate pipeline
+
+pool:
+  vmImage: 'ubuntu-latest'  # Using a standard Azure DevOps agent
+
+steps:
+- task: Bash@3
+  displayName: 'Run Integration Tests'
+  inputs:
+    targetType: 'inline'
+    script: './gradlew integrationTests'
+
+- task: PublishTestResults@2
+  displayName: 'Publish Integration Test Results'
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: '**/build/test-results/integrationTests/*.xml'
+    mergeTestResults: true
+    testRunTitle: 'Integration Tests'
+  condition: always()  # Equivalent to Jenkins 'post { always { ... } }'
