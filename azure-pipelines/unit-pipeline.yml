@@ -1,0 +1,23 @@
+# Converted from Jenkinsfile.unit
+# Azure DevOps Pipeline for Unit Tests
+
+trigger: none  # This will be triggered by the aggregate pipeline
+
+pool:
+  vmImage: 'ubuntu-latest'  # Using a standard Azure DevOps agent
+
+steps:
+- task: Bash@3
+  displayName: 'Build & Run Unit Tests'
+  inputs:
+    targetType: 'inline'
+    script: './gradlew clean build'
+
+- task: PublishTestResults@2
+  displayName: 'Publish Unit Test Results'
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: '**/build/test-results/test/*.xml'
+    mergeTestResults: true
+    testRunTitle: 'Unit Tests'
+  condition: always()  # Equivalent to Jenkins 'post { always { ... } }'
