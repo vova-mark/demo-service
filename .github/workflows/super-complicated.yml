@@ -8,8 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on:
-        group: ${{ needs.SET-GH-RUNNERS.outputs.runner_group_name }}
+    runs-on: ubuntu-latest
 
     # Define workflow inputs
     env:
