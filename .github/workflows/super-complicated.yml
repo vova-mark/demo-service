@@ -38,8 +38,8 @@ jobs:
         run: echo "$CUSTOM_MESSAGE" > temp.txt
 
       # 9. Bash: Archive workspace
-      - name: Archive workspace
-        run: tar czf workspace.tar.gz .
+      - name: Archive file
+        run: tar -czf workspace.tar.gz src temp.txt
 
       # 11. GitHub Action: Checkout code
       - name: Checkout code
