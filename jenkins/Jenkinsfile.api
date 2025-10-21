@@ -1,0 +1,14 @@
+pipeline {
+    agent { label 'linux' }
+    stages {
+        stage('Checkout') { steps { checkout scm } }
+        stage('Run API Isolated Tests') { steps { sh './gradlew apiIsolatedTests' } }
+        stage('Publish API Test Results') {
+            steps {
+                archiveArtifacts artifacts: '**/build/test-results/apiIsolatedTests/*.xml', allowEmptyArchive: true, fingerprint: true
+                junit testResults: '**/build/test-results/apiIsolatedTests/*.xml', allowEmptyResults: true, skipPublishingChecks: false
+            }
+        }
+    }
+    post { always { cleanWs() } }
+}
