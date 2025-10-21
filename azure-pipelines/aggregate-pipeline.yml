@@ -1,0 +1,39 @@
+# Converted from Jenkinsfile.aggregate
+# Azure DevOps Aggregate Pipeline
+
+trigger:
+  branches:
+    include:
+    - main  # Standard trigger on main branch
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+- stage: UnitTests
+  displayName: 'Build & Unit Tests'
+  jobs:
+  - job: UnitTestsJob
+    steps:
+    # In Azure DevOps, we can either:
+    # 1. Use template reference (recommended for modularity)
+    # 2. Inline the steps from unit-pipeline.yml
+    # Option 1 with template:
+    - template: unit-pipeline.yml
+    # Option 2 would be to inline all steps here
+
+- stage: IntegrationTests
+  displayName: 'Integration Tests'
+  dependsOn: UnitTests  # This creates the sequential flow
+  jobs:
+  - job: IntegrationTestsJob
+    steps:
+    - template: integration-pipeline.yml
+
+- stage: APITests
+  displayName: 'API Isolated Tests'
+  dependsOn: IntegrationTests  # This creates the sequential flow
+  jobs:
+  - job: APITestsJob
+    steps:
+    - template: api-pipeline.yml
