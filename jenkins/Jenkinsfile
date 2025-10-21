@@ -1,0 +1,38 @@
+pipeline {
+    agent any
+    triggers {
+        pollSCM('H/5 * * * *')
+    }
+    options {
+        preserveStashes(buildCount: 5)
+    }
+    stages {
+        stage('Unit Tests') {
+            when { branch 'main' }
+            steps {
+                script {
+                    build job: 'unit-tests', wait: true, propagate: true
+                }
+            }
+        }
+        stage('Integration Tests') {
+            when { branch 'main' }
+            steps {
+                script {
+                    build job: 'integration-tests', wait: true, propagate: true
+                }
+            }
+        }
+        stage('API Tests') {
+            when { branch 'main' }
+            steps {
+                script {
+                    build job: 'api-tests', wait: true, propagate: true
+                }
+            }
+        }
+    }
+    post {
+        always { cleanWs() }
+    }
+}
