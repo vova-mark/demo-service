@@ -1,0 +1,23 @@
+# Converted from Jenkinsfile.api
+# Azure DevOps Pipeline for API Isolated Tests
+
+trigger: none  # This will be triggered by the aggregate pipeline
+
+pool:
+  vmImage: 'ubuntu-latest'  # Using a standard Azure DevOps agent
+
+steps:
+- task: Bash@3
+  displayName: 'Run API Isolated Tests'
+  inputs:
+    targetType: 'inline'
+    script: './gradlew apiIsolatedTests'
+
+- task: PublishTestResults@2
+  displayName: 'Publish API Test Results'
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: '**/build/test-results/apiIsolatedTests/*.xml'
+    mergeTestResults: true
+    testRunTitle: 'API Isolated Tests'
+  condition: always()  # Equivalent to Jenkins 'post { always { ... } }'
