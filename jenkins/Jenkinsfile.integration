@@ -1,0 +1,14 @@
+pipeline {
+    agent { label 'linux' }
+    stages {
+        stage('Checkout') { steps { checkout scm } }
+        stage('Run Integration Tests') { steps { sh './gradlew integrationTests' } }
+        stage('Publish Integration Test Results') {
+            steps {
+                archiveArtifacts artifacts: '**/build/test-results/integrationTests/*.xml', allowEmptyArchive: true, fingerprint: true
+                junit testResults: '**/build/test-results/integrationTests/*.xml', allowEmptyResults: true, skipPublishingChecks: false
+            }
+        }
+    }
+    post { always { cleanWs() } }
+}
