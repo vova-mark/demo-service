@@ -20,20 +20,20 @@ jobs:
       PYTHON_VERSION: ${{ inputs.python_version || '3.11' }}
 
     steps:
-      # 2. Bash: Show current directory
+      # 1. Bash: Show current directory
       - name: Show current directory
         run: pwd
 
-      # 4. Bash: Print date
+      # 2. Bash: Print date
       - name: Print current date
         run: date
 
-      # 7. Bash: Print first 10 lines of README
+      # 3. Bash: Print first 10 lines of README
       - name: Print first 10 lines of README
         run: |
           if [ -f README.md ]; then head -10 README.md; else echo "No README.md"; fi
 
-      # 8. Bash: Create a temp file with custom message
+      # 4. Bash: Create a temp file with custom message
       - name: Create a temp file
         shell: bash
         run: |
@@ -41,61 +41,61 @@ jobs:
           ls -l $GITHUB_WORKSPACE/temp.txt
           cat $GITHUB_WORKSPACE/temp.txt
 
-      # 9. Bash: Archive file
+      # 5. Bash: Archive file
       - name: Archive file
         run: tar -czf workspace.tar.gz temp.txt
 
-      # 11. GitHub Action: Checkout code
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      # 12. GitHub Action: Set up Java
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: ${{ env.JAVA_VERSION }}
-
-      # 13. GitHub Action: Set up Node.js
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      # 14. GitHub Action: Upload artifact
+      # 6. GitHub Action: Upload artifact
       - name: Upload temp file
         uses: actions/upload-artifact@v4
         with:
           name: temp-file
           path: ${{ github.workspace }}/temp.txt
 
-      # 15. GitHub Action: Download artifact
+      # 7. GitHub Action: Download artifact
       - name: Download temp file
         uses: actions/download-artifact@v4
         with:
           name: temp-file
 
-      # 16. GitHub Action: Cache dependencies
+      # 8. GitHub Action: Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 9. GitHub Action: Set up Java
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.JAVA_VERSION }}
+
+      # 10. GitHub Action: Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      # 11. GitHub Action: Cache dependencies
       - name: Cache Gradle dependencies
         uses: actions/cache@v4
         with:
           path: ~/.gradle/caches
           key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
 
-      # 17. GitHub Action: Setup Python
+      # 12. GitHub Action: Setup Python
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      # 18. GitHub Action: Upload workspace archive
+      # 13. GitHub Action: Upload workspace archive
       - name: Upload workspace archive
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.ARTIFACT_NAME }}
           path: workspace.tar.gz
 
-      # 19. GitHub Action: Create issue on failure
+      # 14. GitHub Action: Create issue on failure
       - name: Create issue on failure
         if: failure()
         uses: dacbd/create-issue-action@v1
@@ -103,7 +103,7 @@ jobs:
           title: 'Workflow failed'
           body: 'The workflow failed. Please investigate.'
 
-      # 20. GitHub Action: Slack notification
+      # 15. GitHub Action: Slack notification
       - name: Slack notification
         uses: 8398a7/action-slack@v3
         with:
@@ -111,7 +111,7 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-      # 21. Bash: Run extra steps if input is true
+      # 16. Bash: Run extra steps if input is true
       - name: Extra step (conditional)
         if: ${{ env.RUN_EXTRA_STEPS == 'true' }}
         run: echo "Running extra steps as requested!"
