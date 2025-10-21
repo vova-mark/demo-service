@@ -35,7 +35,10 @@ jobs:
 
       # 8. Bash: Create a temp file with custom message
       - name: Create a temp file
-        run: echo "$CUSTOM_MESSAGE" > temp.txt
+        run: |
+          echo "$CUSTOM_MESSAGE" > temp.txt
+          ls -l temp.txt
+          cat temp.txt
 
       # 9. Bash: Archive file
       - name: Archive file
@@ -63,7 +66,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: temp-file
-          path: temp.txt
+          path: ${{ github.workspace }}/temp.txt
 
       # 15. GitHub Action: Download artifact
       - name: Download temp file
