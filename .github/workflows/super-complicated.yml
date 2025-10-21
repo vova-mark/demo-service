@@ -37,9 +37,9 @@ jobs:
       - name: Create a temp file
         run: echo "$CUSTOM_MESSAGE" > temp.txt
 
-      # 9. Bash: Archive workspace
+      # 9. Bash: Archive file
       - name: Archive file
-        run: tar -czf workspace.tar.gz src temp.txt
+        run: tar -czf workspace.tar.gz temp.txt
 
       # 11. GitHub Action: Checkout code
       - name: Checkout code
