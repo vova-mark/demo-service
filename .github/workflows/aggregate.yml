@@ -1,19 +1,41 @@
-# .github/workflows/aggregate.yml
 name: Aggregate Pipeline
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
+  # Additional triggers can be uncommented as needed
+  # push:
+  #   branches: [ main ]
+  # pull_request:
+  #   branches: [ main ]
 
 jobs:
-  unit:
-    uses: ./.github/workflows/unit.yml
-
-  integration:
-    needs: unit
-    uses: ./.github/workflows/integration.yml
-
-  api:
-    needs: integration
-    uses: ./.github/workflows/api.yml
+  aggregate:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Trigger unit tests workflow
+      - name: Trigger Unit Tests
+        uses: convictional/trigger-workflow-and-wait@v1.6.1
+        with:
+          owner: ${{ github.repository_owner }}
+          repo: ${{ github.event.repository.name }}
+          workflow: unit.yml
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          
+      # Trigger integration tests workflow
+      - name: Trigger Integration Tests
+        uses: convictional/trigger-workflow-and-wait@v1.6.1
+        with:
+          owner: ${{ github.repository_owner }}
+          repo: ${{ github.event.repository.name }}
+          workflow: integration.yml
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          
+      # Trigger API tests workflow
+      - name: Trigger API Isolated Tests
+        uses: convictional/trigger-workflow-and-wait@v1.6.1
+        with:
+          owner: ${{ github.repository_owner }}
+          repo: ${{ github.event.repository.name }}
+          workflow: api.yml
+          github_token: ${{ secrets.GITHUB_TOKEN }}
