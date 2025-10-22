@@ -10,7 +10,7 @@ trigger:
   - main  # Default trigger on main branch changes
 
 pool:
-  vmImage: 'ubuntu-latest'
+  name: Default
 
 stages:
 - stage: BuildAndUnitTests
