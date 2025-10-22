@@ -1,0 +1,31 @@
+# Converted from Jenkinsfile.api
+# Azure DevOps Pipeline for API Isolated Tests
+
+trigger:
+  - main  # Default trigger on main branch changes
+  # NOTE: You may need to adjust the branch name based on your repository
+
+pool:
+  vmImage: 'ubuntu-latest'  # Using a standard Azure agent pool
+  # NOTE: 'agent any' in Jenkins is replaced with a standard Azure agent pool
+  # You may need to adjust this based on your specific Azure DevOps agent requirements
+
+jobs:
+- job: APITests
+  displayName: 'Run API Isolated Tests'
+  steps:
+  - task: Bash@3
+    displayName: 'Run API Isolated Tests'
+    inputs:
+      targetType: 'inline'
+      script: './gradlew apiIsolatedTests'
+      
+  # Post-always section in Jenkins is equivalent to publishing test results
+  - task: PublishTestResults@2
+    displayName: 'Publish Test Results'
+    inputs:
+      testResultsFormat: 'JUnit'
+      testResultsFiles: '**/build/test-results/apiIsolatedTests/*.xml'
+      mergeTestResults: true
+      testRunTitle: 'API Isolated Tests'
+    condition: always()  # This ensures it runs even if previous steps fail
