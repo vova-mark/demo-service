@@ -1,17 +1,35 @@
-# .github/workflows/api.yml
 name: API Isolated Tests
 
-on: [workflow_call]
+on:
+  workflow_dispatch:
+  # Additional triggers can be uncommented as needed
+  # push:
+  #   branches: [ main ]
+  # pull_request:
+  #   branches: [ main ]
 
 jobs:
   api:
     runs-on: ubuntu-latest
+    
     steps:
       - uses: actions/checkout@v3
+      
+      # Setup Java - adjust version as needed for your project
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+          cache: 'gradle'
+          
       - name: Run API Isolated Tests
         run: ./gradlew apiIsolatedTests
-      - name: Publish API Test Results
-        uses: actions/upload-artifact@v4
+        
+      # Equivalent to Jenkins junit step
+      - name: Publish Test Results
+        if: always()
+        uses: mikepenz/action-junit-report@v3
         with:
-          name: api-test-results
-          path: '**/build/test-results/apiIsolatedTests/*.xml'
+          report_paths: '**/build/test-results/apiIsolatedTests/*.xml'
+          fail_on_failure: false
