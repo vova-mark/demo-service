@@ -1,0 +1,72 @@
+# Converted from Jenkinsfile.aggregate
+# Azure DevOps Pipeline using multi-stage approach
+# This approach directly includes all test stages in a single pipeline definition
+
+trigger: none  # No CI trigger by default, adjust as needed
+
+pool:
+  vmImage: 'ubuntu-latest'  # Using default agent, adjust based on your requirements
+  # NOTE: In Jenkins 'agent any' was used which selects any available agent
+
+stages:
+- stage: BuildAndUnitTests
+  displayName: 'Build & Unit Tests'
+  jobs:
+  - job: UnitTests
+    steps:
+    - task: Bash@3
+      displayName: 'Run Build & Unit Tests'
+      inputs:
+        targetType: 'inline'
+        script: './gradlew clean build'
+        
+    - task: PublishTestResults@2
+      displayName: 'Publish Test Results'
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/build/test-results/test/*.xml'
+        mergeTestResults: true
+        testRunTitle: 'Unit Tests'
+      condition: always()
+
+- stage: IntegrationTests
+  displayName: 'Integration Tests'
+  dependsOn: BuildAndUnitTests
+  jobs:
+  - job: IntegrationTests
+    steps:
+    - task: Bash@3
+      displayName: 'Run Integration Tests'
+      inputs:
+        targetType: 'inline'
+        script: './gradlew integrationTests'
+        
+    - task: PublishTestResults@2
+      displayName: 'Publish Test Results'
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/build/test-results/integrationTests/*.xml'
+        mergeTestResults: true
+        testRunTitle: 'Integration Tests'
+      condition: always()
+
+- stage: APIIsolatedTests
+  displayName: 'API Isolated Tests'
+  dependsOn: IntegrationTests
+  jobs:
+  - job: APITests
+    steps:
+    - task: Bash@3
+      displayName: 'Run API Isolated Tests'
+      inputs:
+        targetType: 'inline'
+        script: './gradlew apiIsolatedTests'
+        
+    - task: PublishTestResults@2
+      displayName: 'Publish Test Results'
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/build/test-results/apiIsolatedTests/*.xml'
+        mergeTestResults: true
+        testRunTitle: 'API Isolated Tests'
+      condition: always()
