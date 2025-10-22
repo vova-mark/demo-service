@@ -1,17 +1,30 @@
-# .github/workflows/integration.yml
 name: Integration Tests
 
-on: [workflow_call]
+on:
+  workflow_call:  # This workflow can be called by other workflows
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  integration:
+  integration-tests:
     runs-on: ubuntu-latest
+    
     steps:
-      - uses: actions/checkout@v3
-      - name: Run Integration Tests
-        run: ./gradlew integrationTests
-      - name: Publish Integration Test Results
-        uses: actions/upload-artifact@v4
-        with:
-          name: integration-test-results
-          path: '**/build/test-results/integrationTests/*.xml'
+    - uses: actions/checkout@v3
+    
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'  # Using a reasonable default - adjust as needed
+        distribution: 'temurin'
+        
+    - name: Run Integration Tests
+      run: ./gradlew integrationTests
+      
+    - name: Publish Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v2
+      if: always()  # Run this step even if the previous step fails
+      with:
+        files: '**/build/test-results/integrationTests/*.xml'
