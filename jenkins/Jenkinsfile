@@ -1,0 +1,37 @@
+// Jenkinsfile
+pipeline {
+    agent any
+    
+    triggers {
+        // Trigger on main branch push
+        githubPush(branches: ['main'])
+    }
+    
+    options {
+        // Preserve test reports and artifacts
+        preserveStashes(buildCount: 5)
+    }
+    
+    stages {
+        stage('Unit Tests') {
+            steps {
+                // Call the unit test pipeline
+                build job: 'unit-tests'
+            }
+        }
+        
+        stage('Integration Tests') {
+            steps {
+                // Call the integration test pipeline, only if unit tests passed
+                build job: 'integration-tests'
+            }
+        }
+        
+        stage('API Tests') {
+            steps {
+                // Call the API test pipeline, only if integration tests passed
+                build job: 'api-tests'
+            }
+        }
+    }
+}
