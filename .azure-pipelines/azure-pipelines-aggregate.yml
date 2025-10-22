@@ -1,0 +1,109 @@
+# Converted from Jenkinsfile.aggregate
+# Azure DevOps Aggregate Pipeline that orchestrates all test stages
+
+# IMPORTANT NOTE: There are significant differences in how Azure DevOps handles pipeline dependencies
+# compared to Jenkins' 'build job' feature. Below are two implementation options.
+
+# OPTION 1: Inline execution (simple and self-contained)
+
+trigger:
+  - main  # Default trigger on main branch changes
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+- stage: BuildAndUnitTests
+  displayName: 'Build & Unit Tests'
+  jobs:
+  - job: RunUnitTests
+    steps:
+    - task: Bash@3
+      displayName: 'Run Gradle Build & Unit Tests'
+      inputs:
+        targetType: 'inline'
+        script: './gradlew clean build'
+    - task: PublishTestResults@2
+      displayName: 'Publish Test Results'
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/build/test-results/test/*.xml'
+        mergeTestResults: true
+        testRunTitle: 'Unit Tests'
+      condition: always()
+
+- stage: IntegrationTests
+  displayName: 'Integration Tests'
+  dependsOn: BuildAndUnitTests
+  jobs:
+  - job: RunIntegrationTests
+    steps:
+    - task: Bash@3
+      displayName: 'Run Integration Tests'
+      inputs:
+        targetType: 'inline'
+        script: './gradlew integrationTests'
+    - task: PublishTestResults@2
+      displayName: 'Publish Test Results'
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/build/test-results/integrationTests/*.xml'
+        mergeTestResults: true
+        testRunTitle: 'Integration Tests'
+      condition: always()
+
+- stage: APIIsolatedTests
+  displayName: 'API Isolated Tests'
+  dependsOn: IntegrationTests
+  jobs:
+  - job: RunAPITests
+    steps:
+    - task: Bash@3
+      displayName: 'Run API Isolated Tests'
+      inputs:
+        targetType: 'inline'
+        script: './gradlew apiIsolatedTests'
+    - task: PublishTestResults@2
+      displayName: 'Publish Test Results'
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/build/test-results/apiIsolatedTests/*.xml'
+        mergeTestResults: true
+        testRunTitle: 'API Isolated Tests'
+      condition: always()
+
+# OPTION 2: Using pipeline resources (advanced; requires separate pipelines configured)
+# Uncomment and configure if you want to orchestrate existing pipelines by name
+#
+# resources:
+#   pipelines:
+#   - pipeline: unitTests
+#     source: 'unit'  # Name of the unit pipeline in Azure DevOps
+#     trigger: none
+#   - pipeline: integrationTests
+#     source: 'integration'  # Name of the integration pipeline
+#     trigger: none
+#   - pipeline: apiTests
+#     source: 'api'  # Name of the API tests pipeline
+#     trigger: none
+#
+# stages:
+# - stage: BuildAndUnitTests
+#   jobs:
+#   - job: TriggerUnitPipeline
+#     steps:
+#     - script: echo "Trigger unit pipeline via REST or pipeline resource"
+#
+# - stage: IntegrationTests
+#   dependsOn: BuildAndUnitTests
+#   jobs:
+#   - job: TriggerIntegrationPipeline
+#     steps:
+#     - script: echo "Trigger integration pipeline"
+#
+# - stage: APIIsolatedTests
+#   dependsOn: IntegrationTests
+#   jobs:
+#   - job: TriggerAPIPipeline
+#     steps:
+#     - script: echo "Trigger API pipeline"
