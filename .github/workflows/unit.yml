@@ -1,17 +1,30 @@
-# .github/workflows/unit.yml
 name: Build & Unit Tests
 
-on: [workflow_call]
+on:
+  workflow_call:  # This workflow can be called by other workflows
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  unit:
+  unit-tests:
     runs-on: ubuntu-latest
+    
     steps:
-      - uses: actions/checkout@v3
-      - name: Build & Run Unit Tests
-        run: ./gradlew clean build
-      - name: Publish Unit Test Results
-        uses: actions/upload-artifact@v4
-        with:
-          name: unit-test-results
-          path: '**/build/test-results/test/*.xml'
+    - uses: actions/checkout@v3
+    
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'  # Using a reasonable default - adjust as needed
+        distribution: 'temurin'
+        
+    - name: Build & Run Unit Tests
+      run: ./gradlew clean build
+      
+    - name: Publish Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v2
+      if: always()  # Run this step even if the previous step fails
+      with:
+        files: '**/build/test-results/test/*.xml'
