@@ -1,0 +1,23 @@
+name: Aggregate Tests Pipeline
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  unit:
+    name: Build & Unit Tests
+    uses: ./.github/workflows/unit.yml
+
+  integration:
+    name: Integration Tests
+    needs: unit
+    uses: ./.github/workflows/integration.yml
+
+  api:
+    name: API Isolated Tests
+    needs: integration
+    uses: ./.github/workflows/api.yml
