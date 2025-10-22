@@ -5,7 +5,7 @@
 trigger: none  # No CI trigger by default, adjust as needed
 
 pool:
-  vmImage: 'ubuntu-latest'  # Using default agent, adjust based on your requirements
+  name: Default  # Using default agent, adjust based on your requirements
   # NOTE: In Jenkins 'agent any' was used which selects any available agent
 
 stages:
