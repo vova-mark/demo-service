@@ -1,9 +1,6 @@
 // unit-tests.Jenkinsfile
 pipeline {
-    agent {
-        // Equivalent to runs-on: ubuntu-latest
-        label 'linux'
-    }
+    agent any
     
     options {
         // Preserve test results
