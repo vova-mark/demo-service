@@ -1,0 +1,26 @@
+# Converted from Jenkinsfile.unit
+trigger: none  # No explicit trigger defined in original Jenkinsfile
+
+pool:
+  vmImage: 'ubuntu-latest'  # Azure DevOps equivalent to 'agent any' in Jenkins
+
+stages:
+- stage: BuildAndTest
+  displayName: 'Build & Unit Tests'
+  jobs:
+  - job: UnitTests
+    steps:
+    - task: Bash@3
+      displayName: 'Build & Unit Tests'
+      inputs:
+        targetType: 'inline'
+        script: './gradlew clean build'
+    
+    - task: PublishTestResults@2
+      displayName: 'Publish Test Results'
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/build/test-results/test/*.xml'
+        mergeTestResults: true
+        testRunTitle: 'Unit Tests'
+      condition: always()  # Equivalent to post.always in Jenkins
