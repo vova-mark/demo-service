@@ -1,0 +1,26 @@
+# Converted from Jenkinsfile.api
+trigger: none  # No explicit trigger defined in original Jenkinsfile
+
+pool:
+  vmImage: 'ubuntu-latest'  # Azure DevOps equivalent to 'agent any' in Jenkins
+
+stages:
+- stage: APITests
+  displayName: 'Run API Isolated Tests'
+  jobs:
+  - job: APITests
+    steps:
+    - task: Bash@3
+      displayName: 'Run API Isolated Tests'
+      inputs:
+        targetType: 'inline'
+        script: './gradlew apiIsolatedTests'
+    
+    - task: PublishTestResults@2
+      displayName: 'Publish Test Results'
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/build/test-results/apiIsolatedTests/*.xml'
+        mergeTestResults: true
+        testRunTitle: 'API Isolated Tests'
+      condition: always()  # Equivalent to post.always in Jenkins

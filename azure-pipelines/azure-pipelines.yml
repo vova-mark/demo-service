@@ -1,0 +1,70 @@
+# Consolidated pipeline that combines all stages in a single file
+# Recommended approach in Azure DevOps instead of triggering separate pipelines
+
+trigger: none
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+- stage: UnitTests
+  displayName: 'Build & Unit Tests'
+  jobs:
+  - job: UnitTests
+    steps:
+    - task: Bash@3
+      displayName: 'Build & Unit Tests'
+      inputs:
+        targetType: 'inline'
+        script: './gradlew clean build'
+    
+    - task: PublishTestResults@2
+      displayName: 'Publish Unit Test Results'
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/build/test-results/test/*.xml'
+        mergeTestResults: true
+        testRunTitle: 'Unit Tests'
+      condition: always()
+
+- stage: IntegrationTests
+  displayName: 'Integration Tests'
+  dependsOn: UnitTests
+  jobs:
+  - job: IntegrationTests
+    steps:
+    - task: Bash@3
+      displayName: 'Run Integration Tests'
+      inputs:
+        targetType: 'inline'
+        script: './gradlew integrationTests'
+    
+    - task: PublishTestResults@2
+      displayName: 'Publish Integration Test Results'
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/build/test-results/integrationTests/*.xml'
+        mergeTestResults: true
+        testRunTitle: 'Integration Tests'
+      condition: always()
+
+- stage: APITests
+  displayName: 'API Isolated Tests'
+  dependsOn: IntegrationTests
+  jobs:
+  - job: APITests
+    steps:
+    - task: Bash@3
+      displayName: 'Run API Isolated Tests'
+      inputs:
+        targetType: 'inline'
+        script: './gradlew apiIsolatedTests'
+    
+    - task: PublishTestResults@2
+      displayName: 'Publish API Test Results'
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/build/test-results/apiIsolatedTests/*.xml'
+        mergeTestResults: true
+        testRunTitle: 'API Isolated Tests'
+      condition: always()
