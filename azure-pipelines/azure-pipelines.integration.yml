@@ -1,0 +1,26 @@
+# Converted from Jenkinsfile.integration
+trigger: none  # No explicit trigger defined in original Jenkinsfile
+
+pool:
+  vmImage: 'ubuntu-latest'  # Azure DevOps equivalent to 'agent any' in Jenkins
+
+stages:
+- stage: IntegrationTests
+  displayName: 'Run Integration Tests'
+  jobs:
+  - job: IntegrationTests
+    steps:
+    - task: Bash@3
+      displayName: 'Run Integration Tests'
+      inputs:
+        targetType: 'inline'
+        script: './gradlew integrationTests'
+    
+    - task: PublishTestResults@2
+      displayName: 'Publish Test Results'
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/build/test-results/integrationTests/*.xml'
+        mergeTestResults: true
+        testRunTitle: 'Integration Tests'
+      condition: always()  # Equivalent to post.always in Jenkins
